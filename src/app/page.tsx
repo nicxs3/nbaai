@@ -1842,7 +1842,6 @@ export default function NBAGames() {
 
   const activeGame = todaysGames[activeIndex]
   const activeProps = playerProps[activeGame.id as keyof typeof playerProps]
-  const activeBoxScore = boxScores[activeGame.id as keyof typeof boxScores]
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white">
