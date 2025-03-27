@@ -11,8 +11,66 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import Image from "next/image"
 
+// Type definitions
+interface Team {
+  name: string
+  logo: string
+  color: string
+  secondaryColor: string
+  score: number
+}
+
+interface Game {
+  id: number
+  homeTeam: Team
+  awayTeam: Team
+  time: string
+  status: string
+}
+
+interface Player {
+  name: string
+  position: string
+  minutes: number
+  points: number
+  rebounds: number
+  assists: number
+  steals: number
+  blocks: number
+  fg: string
+  threes: string
+  ft: string
+}
+
+interface TeamBoxScore {
+  name: string
+  quarters: number[]
+  total: number
+  players: Player[]
+}
+
+interface BoxScore {
+  awayTeam: TeamBoxScore
+  homeTeam: TeamBoxScore
+}
+
+interface PlayerProp {
+  player: string
+  team: string
+  stat: string
+  line: number
+  recommendation: "over" | "under"
+  confidence: number
+  trend: "up" | "down"
+}
+
+interface GameProps {
+  prizePicks: PlayerProp[]
+  underdogs: PlayerProp[]
+}
+
 // Mock data for NBA games
-const todaysGames = [
+const todaysGames: Game[] = [
   {
     id: 1,
     homeTeam: {
@@ -111,7 +169,7 @@ const todaysGames = [
 ]
 
 // Mock data for player props
-const playerProps = {
+const playerProps: Record<number, GameProps> = {
   1: {
     // Lakers vs Warriors
     prizePicks: [
@@ -120,45 +178,45 @@ const playerProps = {
         team: "Warriors",
         stat: "Points",
         line: 28.5,
-        recommendation: "over",
+        recommendation: "over" as const,
         confidence: 85,
-        trend: "up",
+        trend: "up" as const,
       },
       {
         player: "LeBron James",
         team: "Lakers",
         stat: "Points + Rebounds + Assists",
         line: 42.5,
-        recommendation: "over",
+        recommendation: "over" as const,
         confidence: 80,
-        trend: "up",
+        trend: "up" as const,
       },
       {
         player: "Anthony Davis",
         team: "Lakers",
         stat: "Rebounds",
         line: 12.5,
-        recommendation: "under",
+        recommendation: "under" as const,
         confidence: 75,
-        trend: "down",
+        trend: "down" as const,
       },
       {
         player: "Klay Thompson",
         team: "Warriors",
         stat: "3-Pointers Made",
         line: 3.5,
-        recommendation: "over",
+        recommendation: "over" as const,
         confidence: 70,
-        trend: "up",
+        trend: "up" as const,
       },
       {
         player: "D'Angelo Russell",
         team: "Lakers",
         stat: "Assists",
         line: 6.5,
-        recommendation: "under",
+        recommendation: "under" as const,
         confidence: 65,
-        trend: "down",
+        trend: "down" as const,
       },
     ],
     underdogs: [
@@ -167,45 +225,45 @@ const playerProps = {
         team: "Warriors",
         stat: "Assists",
         line: 7.5,
-        recommendation: "over",
+        recommendation: "over" as const,
         confidence: 78,
-        trend: "up",
+        trend: "up" as const,
       },
       {
         player: "Austin Reaves",
         team: "Lakers",
         stat: "Points",
         line: 14.5,
-        recommendation: "over",
+        recommendation: "over" as const,
         confidence: 72,
-        trend: "up",
+        trend: "up" as const,
       },
       {
         player: "Jonathan Kuminga",
         team: "Warriors",
         stat: "Points + Rebounds",
         line: 19.5,
-        recommendation: "under",
+        recommendation: "under" as const,
         confidence: 68,
-        trend: "down",
+        trend: "down" as const,
       },
       {
         player: "Rui Hachimura",
         team: "Lakers",
         stat: "Points",
         line: 11.5,
-        recommendation: "under",
+        recommendation: "under" as const,
         confidence: 63,
-        trend: "down",
+        trend: "down" as const,
       },
       {
         player: "Brandin Podziemski",
         team: "Warriors",
         stat: "Rebounds",
         line: 5.5,
-        recommendation: "over",
+        recommendation: "over" as const,
         confidence: 60,
-        trend: "up",
+        trend: "up" as const,
       },
     ],
   },
@@ -217,45 +275,45 @@ const playerProps = {
         team: "Celtics",
         stat: "Points",
         line: 29.5,
-        recommendation: "over",
+        recommendation: "over" as const,
         confidence: 82,
-        trend: "up",
+        trend: "up" as const,
       },
       {
         player: "Jalen Brunson",
         team: "Knicks",
         stat: "Points + Assists",
         line: 35.5,
-        recommendation: "over",
+        recommendation: "over" as const,
         confidence: 79,
-        trend: "up",
+        trend: "up" as const,
       },
       {
         player: "Kristaps Porzingis",
         team: "Celtics",
         stat: "Rebounds",
         line: 8.5,
-        recommendation: "under",
+        recommendation: "under" as const,
         confidence: 74,
-        trend: "down",
+        trend: "down" as const,
       },
       {
         player: "Derrick White",
         team: "Celtics",
         stat: "3-Pointers Made",
         line: 2.5,
-        recommendation: "over",
+        recommendation: "over" as const,
         confidence: 71,
-        trend: "up",
+        trend: "up" as const,
       },
       {
         player: "OG Anunoby",
         team: "Knicks",
         stat: "Points",
         line: 15.5,
-        recommendation: "under",
+        recommendation: "under" as const,
         confidence: 67,
-        trend: "down",
+        trend: "down" as const,
       },
     ],
     underdogs: [
@@ -264,45 +322,45 @@ const playerProps = {
         team: "Celtics",
         stat: "Points",
         line: 24.5,
-        recommendation: "over",
+        recommendation: "over" as const,
         confidence: 76,
-        trend: "up",
+        trend: "up" as const,
       },
       {
         player: "Donte DiVincenzo",
         team: "Knicks",
         stat: "3-Pointers Made",
         line: 3.5,
-        recommendation: "over",
+        recommendation: "over" as const,
         confidence: 73,
-        trend: "up",
+        trend: "up" as const,
       },
       {
         player: "Al Horford",
         team: "Celtics",
         stat: "Points + Rebounds",
         line: 15.5,
-        recommendation: "under",
+        recommendation: "under" as const,
         confidence: 69,
-        trend: "down",
+        trend: "down" as const,
       },
       {
         player: "Josh Hart",
         team: "Knicks",
         stat: "Rebounds",
         line: 8.5,
-        recommendation: "over",
+        recommendation: "over" as const,
         confidence: 66,
-        trend: "up",
+        trend: "up" as const,
       },
       {
         player: "Payton Pritchard",
         team: "Celtics",
         stat: "Points",
         line: 9.5,
-        recommendation: "under",
+        recommendation: "under" as const,
         confidence: 62,
-        trend: "down",
+        trend: "down" as const,
       },
     ],
   },
@@ -314,45 +372,45 @@ const playerProps = {
         team: "Bucks",
         stat: "Points",
         line: 32.5,
-        recommendation: "over",
+        recommendation: "over" as const,
         confidence: 88,
-        trend: "up",
+        trend: "up" as const,
       },
       {
         player: "Coby White",
         team: "Bulls",
         stat: "Points + Assists",
         line: 25.5,
-        recommendation: "over",
+        recommendation: "over" as const,
         confidence: 77,
-        trend: "up",
+        trend: "up" as const,
       },
       {
         player: "Damian Lillard",
         team: "Bucks",
         stat: "3-Pointers Made",
         line: 3.5,
-        recommendation: "over",
+        recommendation: "over" as const,
         confidence: 75,
-        trend: "up",
+        trend: "up" as const,
       },
       {
         player: "Nikola Vucevic",
         team: "Bulls",
         stat: "Rebounds",
         line: 11.5,
-        recommendation: "under",
+        recommendation: "under" as const,
         confidence: 70,
-        trend: "down",
+        trend: "down" as const,
       },
       {
         player: "Khris Middleton",
         team: "Bucks",
         stat: "Points",
         line: 18.5,
-        recommendation: "under",
+        recommendation: "under" as const,
         confidence: 65,
-        trend: "down",
+        trend: "down" as const,
       },
     ],
     underdogs: [
@@ -361,45 +419,45 @@ const playerProps = {
         team: "Bulls",
         stat: "Points",
         line: 12.5,
-        recommendation: "over",
+        recommendation: "over" as const,
         confidence: 72,
-        trend: "up",
+        trend: "up" as const,
       },
       {
         player: "Bobby Portis",
         team: "Bucks",
         stat: "Rebounds",
         line: 7.5,
-        recommendation: "over",
+        recommendation: "over" as const,
         confidence: 69,
-        trend: "up",
+        trend: "up" as const,
       },
       {
         player: "Ayo Dosunmu",
         team: "Bulls",
         stat: "Points + Assists",
         line: 17.5,
-        recommendation: "under",
+        recommendation: "under" as const,
         confidence: 67,
-        trend: "down",
+        trend: "down" as const,
       },
       {
         player: "Brook Lopez",
         team: "Bucks",
         stat: "Blocks",
         line: 1.5,
-        recommendation: "over",
+        recommendation: "over" as const,
         confidence: 64,
-        trend: "up",
+        trend: "up" as const,
       },
       {
         player: "Malik Beasley",
         team: "Bucks",
         stat: "Points",
         line: 10.5,
-        recommendation: "under",
+        recommendation: "under" as const,
         confidence: 61,
-        trend: "down",
+        trend: "down" as const,
       },
     ],
   },
@@ -411,45 +469,45 @@ const playerProps = {
         team: "Heat",
         stat: "Points",
         line: 24.5,
-        recommendation: "over",
+        recommendation: "over" as const,
         confidence: 81,
-        trend: "up",
+        trend: "up" as const,
       },
       {
         player: "Tyrese Maxey",
         team: "76ers",
         stat: "Points + Assists",
         line: 32.5,
-        recommendation: "over",
+        recommendation: "over" as const,
         confidence: 78,
-        trend: "up",
+        trend: "up" as const,
       },
       {
         player: "Bam Adebayo",
         team: "Heat",
         stat: "Rebounds",
         line: 10.5,
-        recommendation: "under",
+        recommendation: "under" as const,
         confidence: 73,
-        trend: "down",
+        trend: "down" as const,
       },
       {
         player: "Tobias Harris",
         team: "76ers",
         stat: "Points",
         line: 17.5,
-        recommendation: "under",
+        recommendation: "under" as const,
         confidence: 69,
-        trend: "down",
+        trend: "down" as const,
       },
       {
         player: "Tyler Herro",
         team: "Heat",
         stat: "3-Pointers Made",
         line: 2.5,
-        recommendation: "over",
+        recommendation: "over" as const,
         confidence: 66,
-        trend: "up",
+        trend: "up" as const,
       },
     ],
     underdogs: [
@@ -458,45 +516,45 @@ const playerProps = {
         team: "76ers",
         stat: "Points",
         line: 14.5,
-        recommendation: "over",
+        recommendation: "over" as const,
         confidence: 74,
-        trend: "up",
+        trend: "up" as const,
       },
       {
         player: "Caleb Martin",
         team: "Heat",
         stat: "Points + Rebounds",
         line: 15.5,
-        recommendation: "over",
+        recommendation: "over" as const,
         confidence: 71,
-        trend: "up",
+        trend: "up" as const,
       },
       {
         player: "Paul Reed",
         team: "76ers",
         stat: "Rebounds",
         line: 6.5,
-        recommendation: "under",
+        recommendation: "under" as const,
         confidence: 68,
-        trend: "down",
+        trend: "down" as const,
       },
       {
         player: "Duncan Robinson",
         team: "Heat",
         stat: "3-Pointers Made",
         line: 2.5,
-        recommendation: "over",
+        recommendation: "over" as const,
         confidence: 65,
-        trend: "up",
+        trend: "up" as const,
       },
       {
         player: "Kyle Lowry",
         team: "76ers",
         stat: "Assists",
         line: 5.5,
-        recommendation: "under",
+        recommendation: "under" as const,
         confidence: 62,
-        trend: "down",
+        trend: "down" as const,
       },
     ],
   },
@@ -508,45 +566,45 @@ const playerProps = {
         team: "Suns",
         stat: "Points",
         line: 28.5,
-        recommendation: "over",
+        recommendation: "over" as const,
         confidence: 84,
-        trend: "up",
+        trend: "up" as const,
       },
       {
         player: "Nikola Jokic",
         team: "Nuggets",
         stat: "Points + Rebounds + Assists",
         line: 50.5,
-        recommendation: "over",
+        recommendation: "over" as const,
         confidence: 83,
-        trend: "up",
+        trend: "up" as const,
       },
       {
         player: "Devin Booker",
         team: "Suns",
         stat: "Points + Assists",
         line: 35.5,
-        recommendation: "under",
+        recommendation: "under" as const,
         confidence: 72,
-        trend: "down",
+        trend: "down" as const,
       },
       {
         player: "Jamal Murray",
         team: "Nuggets",
         stat: "Points",
         line: 22.5,
-        recommendation: "over",
+        recommendation: "over" as const,
         confidence: 70,
-        trend: "up",
+        trend: "up" as const,
       },
       {
         player: "Bradley Beal",
         team: "Suns",
         stat: "Points",
         line: 18.5,
-        recommendation: "under",
+        recommendation: "under" as const,
         confidence: 67,
-        trend: "down",
+        trend: "down" as const,
       },
     ],
     underdogs: [
@@ -555,52 +613,52 @@ const playerProps = {
         team: "Nuggets",
         stat: "Points",
         line: 16.5,
-        recommendation: "over",
+        recommendation: "over" as const,
         confidence: 75,
-        trend: "up",
+        trend: "up" as const,
       },
       {
         player: "Jusuf Nurkic",
         team: "Suns",
         stat: "Rebounds",
         line: 9.5,
-        recommendation: "over",
+        recommendation: "over" as const,
         confidence: 72,
-        trend: "up",
+        trend: "up" as const,
       },
       {
         player: "Aaron Gordon",
         team: "Nuggets",
         stat: "Points + Rebounds",
         line: 20.5,
-        recommendation: "under",
+        recommendation: "under" as const,
         confidence: 69,
-        trend: "down",
+        trend: "down" as const,
       },
       {
         player: "Grayson Allen",
         team: "Suns",
         stat: "3-Pointers Made",
         line: 2.5,
-        recommendation: "over",
+        recommendation: "over" as const,
         confidence: 66,
-        trend: "up",
+        trend: "up" as const,
       },
       {
         player: "Kentavious Caldwell-Pope",
         team: "Nuggets",
         stat: "Points",
         line: 9.5,
-        recommendation: "under",
+        recommendation: "under" as const,
         confidence: 63,
-        trend: "down",
+        trend: "down" as const,
       },
     ],
   },
 }
 
 // Mock box score data
-const boxScores = {
+const boxScores: Record<number, BoxScore> = {
   1: {
     // Lakers vs Warriors
     awayTeam: {
@@ -1759,7 +1817,7 @@ export default function NBAGames() {
   const [expanded, setExpanded] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [showBoxScore, setShowBoxScore] = useState(false)
-  const [selectedGame, setSelectedGame] = useState(null)
+  const [selectedGame, setSelectedGame] = useState<Game | null>(null)
 
   const handlePrevious = () => {
     setActiveIndex((prev) => (prev === 0 ? todaysGames.length - 1 : prev - 1))
@@ -1777,14 +1835,14 @@ export default function NBAGames() {
     setSidebarOpen(!sidebarOpen)
   }
 
-  const handleGameClick = (game) => {
+  const handleGameClick = (game: Game) => {
     setSelectedGame(game)
     setShowBoxScore(true)
   }
 
   const activeGame = todaysGames[activeIndex]
-  const activeProps = playerProps[activeGame.id]
-  const activeBoxScore = boxScores[activeGame.id]
+  const activeProps = playerProps[activeGame.id as keyof typeof playerProps]
+  const activeBoxScore = boxScores[activeGame.id as keyof typeof boxScores]
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white">
@@ -2107,7 +2165,7 @@ export default function NBAGames() {
                   <TableBody>
                     <TableRow className="border-gray-700">
                       <TableCell className="font-medium">{boxScores[selectedGame.id].awayTeam.name}</TableCell>
-                      {boxScores[selectedGame.id].awayTeam.quarters.map((q, i) => (
+                      {boxScores[selectedGame.id].awayTeam.quarters.map((q: number, i: number) => (
                         <TableCell key={i} className="text-center">
                           {q}
                         </TableCell>
@@ -2118,7 +2176,7 @@ export default function NBAGames() {
                     </TableRow>
                     <TableRow className="border-gray-700">
                       <TableCell className="font-medium">{boxScores[selectedGame.id].homeTeam.name}</TableCell>
-                      {boxScores[selectedGame.id].homeTeam.quarters.map((q, i) => (
+                      {boxScores[selectedGame.id].homeTeam.quarters.map((q: number, i: number) => (
                         <TableCell key={i} className="text-center">
                           {q}
                         </TableCell>
@@ -2235,8 +2293,8 @@ export default function NBAGames() {
 }
 
 // Component for displaying player prop cards
-function PropCard({ prop }) {
-  const getConfidenceColor = (confidence) => {
+function PropCard({ prop }: { prop: PlayerProp }) {
+  const getConfidenceColor = (confidence: number) => {
     if (confidence >= 80) return "bg-green-500"
     if (confidence >= 70) return "bg-green-400"
     if (confidence >= 60) return "bg-yellow-500"
