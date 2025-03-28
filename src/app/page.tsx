@@ -1,12 +1,10 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { ChevronLeft, ChevronRight, Clock, X, Eye, EyeOff, ArrowUp, ArrowDown, TrendingUp } from "lucide-react"
+import { ChevronLeft, ChevronRight, Clock, Eye, EyeOff, ArrowUp, ArrowDown, TrendingUp } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
-import { ScrollArea } from "@/components/ui/scroll-area"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import Image from "next/image"
@@ -50,11 +48,6 @@ interface TeamBoxScore {
   players: Player[]
 }
 
-interface BoxScore {
-  awayTeam: TeamBoxScore
-  homeTeam: TeamBoxScore
-}
-
 interface PlayerProp {
   player: string
   team: string
@@ -63,11 +56,6 @@ interface PlayerProp {
   recommendation: "over" | "under"
   confidence: number
   trend: "up" | "down"
-}
-
-interface GameProps {
-  prizePicks: PlayerProp[]
-  underdogs: PlayerProp[]
 }
 
 export default function NBAGames() {

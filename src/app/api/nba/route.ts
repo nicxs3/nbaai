@@ -4,17 +4,61 @@ import { promisify } from 'util'
 
 const execAsync = promisify(exec)
 
+interface Game {
+  id: string
+  homeTeam: {
+    name: string
+    score: number
+    players?: Array<{
+      name: string
+      position: string
+      minutes: string
+      points: number
+      rebounds: number
+      assists: number
+      steals: number
+      blocks: number
+      fg: string
+      threes: string
+      ft: string
+    }>
+  }
+  awayTeam: {
+    name: string
+    score: number
+    players?: Array<{
+      name: string
+      position: string
+      minutes: string
+      points: number
+      rebounds: number
+      assists: number
+      steals: number
+      blocks: number
+      fg: string
+      threes: string
+      ft: string
+    }>
+  }
+  time: string
+  status: string
+}
+
+interface ApiResponse {
+  games: Game[]
+}
+
 export async function GET() {
   try {
     // Execute the Python script
     const { stdout } = await execAsync('python main.py')
     
     // Parse the JSON output
-    const data = JSON.parse(stdout)
+    const data = JSON.parse(stdout) as ApiResponse
     
     // Add team colors and logos to the response
     if (data.games) {
-      data.games = data.games.map((game: any) => ({
+      data.games = data.games.map((game: Game) => ({
         ...game,
         homeTeam: {
           ...game.homeTeam,
