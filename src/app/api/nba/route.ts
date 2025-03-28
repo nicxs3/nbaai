@@ -1,13 +1,48 @@
 import { NextResponse } from 'next/server'
 
+async function fetchFromPrimaryEndpoint() {
+  const response = await fetch('https://cdn.nba.com/static/json/liveData/scoreboard/todaysScoreboard_00.json', {
+    headers: {
+      'Accept': 'application/json',
+      'User-Agent': 'Mozilla/5.0'
+    }
+  })
+  
+  if (!response.ok) {
+    throw new Error(`Primary endpoint failed: ${response.status}`)
+  }
+  
+  return response.json()
+}
+
+async function fetchFromBackupEndpoint() {
+  const response = await fetch('https://www.balldontlie.io/api/v1/games', {
+    headers: {
+      'Accept': 'application/json'
+    }
+  })
+  
+  if (!response.ok) {
+    throw new Error(`Backup endpoint failed: ${response.status}`)
+  }
+  
+  return response.json()
+}
+
 export async function GET() {
   try {
-    const response = await fetch('https://cdn.nba.com/static/json/liveData/scoreboard/todaysScoreboard_00.json')
-    if (!response.ok) {
-      throw new Error('Failed to fetch NBA data')
+    let data
+    try {
+      data = await fetchFromPrimaryEndpoint()
+    } catch (error) {
+      console.error('Primary endpoint failed, trying backup:', error)
+      data = await fetchFromBackupEndpoint()
     }
     
-    const data = await response.json()
+    if (!data.scoreboard || !data.scoreboard.games) {
+      throw new Error('Invalid API response format')
+    }
+
     const games = data.scoreboard.games.map((game: any) => ({
       id: game.gameId,
       homeTeam: {
@@ -53,9 +88,6 @@ export async function GET() {
       time: game.gameStatusText,
       status: game.gameStatus
     }))
-
-    // Log the response to debug
-    console.log('API Response:', JSON.stringify(games, null, 2))
 
     return NextResponse.json({ games })
   } catch (error) {
