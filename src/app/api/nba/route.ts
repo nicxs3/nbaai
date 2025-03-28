@@ -1,5 +1,46 @@
 import { NextResponse } from 'next/server'
 
+interface PlayerStatistics {
+  points: number
+  rebounds: number
+  assists: number
+  steals: number
+  blocks: number
+  fieldGoalsMade: number
+  fieldGoalsAttempted: number
+  threePointersMade: number
+  threePointersAttempted: number
+  freeThrowsMade: number
+  freeThrowsAttempted: number
+}
+
+interface Player {
+  name: string
+  position: string
+  minutes: string
+  statistics: PlayerStatistics
+}
+
+interface Team {
+  teamName: string
+  score: number
+  players: Player[]
+}
+
+interface Game {
+  gameId: string
+  homeTeam: Team
+  awayTeam: Team
+  gameStatusText: string
+  gameStatus: string
+}
+
+interface ScoreboardData {
+  scoreboard: {
+    games: Game[]
+  }
+}
+
 async function fetchFromPrimaryEndpoint() {
   const response = await fetch('https://cdn.nba.com/static/json/liveData/scoreboard/todaysScoreboard_00.json', {
     headers: {
@@ -31,7 +72,7 @@ async function fetchFromBackupEndpoint() {
 
 export async function GET() {
   try {
-    let data
+    let data: ScoreboardData
     try {
       data = await fetchFromPrimaryEndpoint()
     } catch (error) {
@@ -43,7 +84,7 @@ export async function GET() {
       throw new Error('Invalid API response format')
     }
 
-    const games = data.scoreboard.games.map((game: any) => ({
+    const games = data.scoreboard.games.map((game: Game) => ({
       id: game.gameId,
       homeTeam: {
         name: game.homeTeam.teamName,
@@ -51,7 +92,7 @@ export async function GET() {
         color: getTeamColor(game.homeTeam.teamName),
         secondaryColor: getTeamSecondaryColor(game.homeTeam.teamName),
         logo: getTeamLogo(game.homeTeam.teamName),
-        players: game.homeTeam.players?.map((player: any) => ({
+        players: game.homeTeam.players?.map((player: Player) => ({
           name: player.name,
           position: player.position || '-',
           minutes: player.minutes || '0:00',
@@ -71,7 +112,7 @@ export async function GET() {
         color: getTeamColor(game.awayTeam.teamName),
         secondaryColor: getTeamSecondaryColor(game.awayTeam.teamName),
         logo: getTeamLogo(game.awayTeam.teamName),
-        players: game.awayTeam.players?.map((player: any) => ({
+        players: game.awayTeam.players?.map((player: Player) => ({
           name: player.name,
           position: player.position || '-',
           minutes: player.minutes || '0:00',
