@@ -59,9 +59,11 @@ export default function NBAGames() {
           throw new Error('Failed to fetch games')
         }
         const data = await response.json()
+        console.log('Fetched games data:', data)
         setGames(data.games)
         setLoading(false)
       } catch (err) {
+        console.error('Error fetching games:', err)
         setError(err instanceof Error ? err.message : 'Failed to fetch games')
         setLoading(false)
       }
@@ -86,12 +88,40 @@ export default function NBAGames() {
     setSidebarOpen(!sidebarOpen)
   }
 
-  const handleGameClick = (game: Game) => {
+  const handleGameClick = async (game: Game) => {
+    console.log('Clicked game:', game)
     setSelectedGame(game)
     setShowBoxScore(true)
     setBoxScoreLoading(true)
-    // Simulate loading for smoother transition
-    setTimeout(() => setBoxScoreLoading(false), 500)
+
+    try {
+      const response = await fetch(`/api/nba/boxscore?gameId=${game.id}`)
+      if (!response.ok) {
+        throw new Error('Failed to fetch box score')
+      }
+      const data = await response.json()
+      console.log('Box score data:', data)
+
+      // Update the selected game with real player data
+      setSelectedGame(prev => {
+        if (!prev) return null
+        return {
+          ...prev,
+          homeTeam: {
+            ...prev.homeTeam,
+            players: data.homeTeam.players
+          },
+          awayTeam: {
+            ...prev.awayTeam,
+            players: data.awayTeam.players
+          }
+        }
+      })
+    } catch (error) {
+      console.error('Error fetching box score:', error)
+    } finally {
+      setBoxScoreLoading(false)
+    }
   }
 
   // Helper function to format minutes
@@ -319,7 +349,7 @@ export default function NBAGames() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {selectedGame?.awayTeam.players?.length ? (
+                      {selectedGame?.awayTeam.players && selectedGame.awayTeam.players.length > 0 ? (
                         selectedGame.awayTeam.players.map((player, index) => (
                           <TableRow key={index} className="hover:bg-gray-700/50">
                             <TableCell className="font-medium whitespace-nowrap">{player.name}</TableCell>
@@ -368,7 +398,7 @@ export default function NBAGames() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {selectedGame?.homeTeam.players?.length ? (
+                      {selectedGame?.homeTeam.players && selectedGame.homeTeam.players.length > 0 ? (
                         selectedGame.homeTeam.players.map((player, index) => (
                           <TableRow key={index} className="hover:bg-gray-700/50">
                             <TableCell className="font-medium whitespace-nowrap">{player.name}</TableCell>

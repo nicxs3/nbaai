@@ -53,7 +53,9 @@ async function fetchFromPrimaryEndpoint() {
     throw new Error(`Primary endpoint failed: ${response.status}`)
   }
   
-  return response.json()
+  const data = await response.json()
+  console.log('Primary API Response:', JSON.stringify(data, null, 2))
+  return data
 }
 
 async function fetchFromBackupEndpoint() {
@@ -67,7 +69,9 @@ async function fetchFromBackupEndpoint() {
     throw new Error(`Backup endpoint failed: ${response.status}`)
   }
   
-  return response.json()
+  const data = await response.json()
+  console.log('Backup API Response:', JSON.stringify(data, null, 2))
+  return data
 }
 
 export async function GET() {
@@ -84,51 +88,61 @@ export async function GET() {
       throw new Error('Invalid API response format')
     }
 
-    const games = data.scoreboard.games.map((game: Game) => ({
-      id: game.gameId,
-      homeTeam: {
-        name: game.homeTeam.teamName,
-        score: game.homeTeam.score,
-        color: getTeamColor(game.homeTeam.teamName),
-        secondaryColor: getTeamSecondaryColor(game.homeTeam.teamName),
-        logo: getTeamLogo(game.homeTeam.teamName),
-        players: game.homeTeam.players?.map((player: Player) => ({
-          name: player.name,
-          position: player.position || '-',
-          minutes: player.minutes || '0:00',
-          points: player.statistics?.points || 0,
-          rebounds: player.statistics?.rebounds || 0,
-          assists: player.statistics?.assists || 0,
-          steals: player.statistics?.steals || 0,
-          blocks: player.statistics?.blocks || 0,
-          fg: `${player.statistics?.fieldGoalsMade || 0}/${player.statistics?.fieldGoalsAttempted || 0}`,
-          threes: `${player.statistics?.threePointersMade || 0}/${player.statistics?.threePointersAttempted || 0}`,
-          ft: `${player.statistics?.freeThrowsMade || 0}/${player.statistics?.freeThrowsAttempted || 0}`
-        })) || []
-      },
-      awayTeam: {
-        name: game.awayTeam.teamName,
-        score: game.awayTeam.score,
-        color: getTeamColor(game.awayTeam.teamName),
-        secondaryColor: getTeamSecondaryColor(game.awayTeam.teamName),
-        logo: getTeamLogo(game.awayTeam.teamName),
-        players: game.awayTeam.players?.map((player: Player) => ({
-          name: player.name,
-          position: player.position || '-',
-          minutes: player.minutes || '0:00',
-          points: player.statistics?.points || 0,
-          rebounds: player.statistics?.rebounds || 0,
-          assists: player.statistics?.assists || 0,
-          steals: player.statistics?.steals || 0,
-          blocks: player.statistics?.blocks || 0,
-          fg: `${player.statistics?.fieldGoalsMade || 0}/${player.statistics?.fieldGoalsAttempted || 0}`,
-          threes: `${player.statistics?.threePointersMade || 0}/${player.statistics?.threePointersAttempted || 0}`,
-          ft: `${player.statistics?.freeThrowsMade || 0}/${player.statistics?.freeThrowsAttempted || 0}`
-        })) || []
-      },
-      time: game.gameStatusText,
-      status: game.gameStatus
-    }))
+    const games = data.scoreboard.games.map((game: Game) => {
+      // Log the raw game data
+      console.log('Processing game:', game.gameId)
+      console.log('Home team players:', game.homeTeam.players)
+      console.log('Away team players:', game.awayTeam.players)
+
+      return {
+        id: game.gameId,
+        homeTeam: {
+          name: game.homeTeam.teamName,
+          score: game.homeTeam.score,
+          color: getTeamColor(game.homeTeam.teamName),
+          secondaryColor: getTeamSecondaryColor(game.homeTeam.teamName),
+          logo: getTeamLogo(game.homeTeam.teamName),
+          players: game.homeTeam.players?.map((player: Player) => ({
+            name: player.name || 'Unknown Player',
+            position: player.position || '-',
+            minutes: player.minutes || '0:00',
+            points: player.statistics?.points || 0,
+            rebounds: player.statistics?.rebounds || 0,
+            assists: player.statistics?.assists || 0,
+            steals: player.statistics?.steals || 0,
+            blocks: player.statistics?.blocks || 0,
+            fg: `${player.statistics?.fieldGoalsMade || 0}/${player.statistics?.fieldGoalsAttempted || 0}`,
+            threes: `${player.statistics?.threePointersMade || 0}/${player.statistics?.threePointersAttempted || 0}`,
+            ft: `${player.statistics?.freeThrowsMade || 0}/${player.statistics?.freeThrowsAttempted || 0}`
+          })) || []
+        },
+        awayTeam: {
+          name: game.awayTeam.teamName,
+          score: game.awayTeam.score,
+          color: getTeamColor(game.awayTeam.teamName),
+          secondaryColor: getTeamSecondaryColor(game.awayTeam.teamName),
+          logo: getTeamLogo(game.awayTeam.teamName),
+          players: game.awayTeam.players?.map((player: Player) => ({
+            name: player.name || 'Unknown Player',
+            position: player.position || '-',
+            minutes: player.minutes || '0:00',
+            points: player.statistics?.points || 0,
+            rebounds: player.statistics?.rebounds || 0,
+            assists: player.statistics?.assists || 0,
+            steals: player.statistics?.steals || 0,
+            blocks: player.statistics?.blocks || 0,
+            fg: `${player.statistics?.fieldGoalsMade || 0}/${player.statistics?.fieldGoalsAttempted || 0}`,
+            threes: `${player.statistics?.threePointersMade || 0}/${player.statistics?.threePointersAttempted || 0}`,
+            ft: `${player.statistics?.freeThrowsMade || 0}/${player.statistics?.freeThrowsAttempted || 0}`
+          })) || []
+        },
+        time: game.gameStatusText,
+        status: game.gameStatus
+      }
+    })
+
+    // Log the processed games
+    console.log('Processed games:', JSON.stringify(games, null, 2))
 
     return NextResponse.json({ games })
   } catch (error) {
