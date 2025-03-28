@@ -41,13 +41,6 @@ interface Player {
   ft: string
 }
 
-interface TeamBoxScore {
-  name: string
-  quarters: number[]
-  total: number
-  players: Player[]
-}
-
 interface PlayerProp {
   player: string
   team: string
@@ -100,10 +93,6 @@ export default function NBAGames() {
     setActiveIndex((prev) => (prev === games.length - 1 ? 0 : prev + 1))
   }
 
-  const toggleExpanded = () => {
-    setExpanded(!expanded)
-  }
-
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen)
   }
@@ -145,8 +134,6 @@ export default function NBAGames() {
       </div>
     )
   }
-
-  const activeGame = games[activeIndex]
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white">
