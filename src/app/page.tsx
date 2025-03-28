@@ -1,10 +1,9 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { ChevronLeft, ChevronRight, Clock, Eye, EyeOff, ArrowUp, ArrowDown, TrendingUp } from "lucide-react"
+import { ChevronLeft, ChevronRight, Clock, Eye, EyeOff } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import Image from "next/image"
@@ -41,19 +40,9 @@ interface Player {
   ft: string
 }
 
-interface PlayerProp {
-  player: string
-  team: string
-  stat: string
-  line: number
-  recommendation: "over" | "under"
-  confidence: number
-  trend: "up" | "down"
-}
-
 export default function NBAGames() {
   const [activeIndex, setActiveIndex] = useState(0)
-  const [expanded, setExpanded] = useState(false)
+  const [expanded] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [games, setGames] = useState<Game[]>([])
   const [loading, setLoading] = useState(true)
@@ -396,58 +385,6 @@ export default function NBAGames() {
         </DialogContent>
       </Dialog>
     </div>
-  )
-}
-
-// Component for displaying player prop cards
-function PropCard({ prop }: { prop: PlayerProp }) {
-  const getConfidenceColor = (confidence: number) => {
-    if (confidence >= 80) return "bg-green-500"
-    if (confidence >= 70) return "bg-green-400"
-    if (confidence >= 60) return "bg-yellow-500"
-    return "bg-red-500"
-  }
-
-  return (
-    <Card className="bg-gray-800 border-gray-700 p-4">
-      <div className="flex justify-between items-start mb-2">
-        <div>
-          <h3 className="font-bold text-lg">{prop.player}</h3>
-          <p className="text-sm text-gray-400">{prop.team}</p>
-        </div>
-        <Badge
-          variant="outline"
-          className={`${prop.recommendation === "over" ? "bg-green-900/30 text-green-400 border-green-500" : "bg-red-900/30 text-red-400 border-red-500"}`}
-        >
-          {prop.recommendation === "over" ? (
-            <ArrowUp className="h-3 w-3 mr-1" />
-          ) : (
-            <ArrowDown className="h-3 w-3 mr-1" />
-          )}
-          {prop.recommendation.toUpperCase()}
-        </Badge>
-      </div>
-
-      <div className="flex justify-between items-center mb-3">
-        <span className="text-sm">{prop.stat}</span>
-        <span className="font-bold">{prop.line}</span>
-      </div>
-
-      <div className="flex items-center gap-2">
-        <div className="flex-1 bg-gray-700 h-2 rounded-full overflow-hidden">
-          <div
-            className={`h-full ${getConfidenceColor(prop.confidence)}`}
-            style={{ width: `${prop.confidence}%` }}
-          ></div>
-        </div>
-        <span className="text-sm font-medium">{prop.confidence}%</span>
-        {prop.trend === "up" ? (
-          <TrendingUp className="h-4 w-4 text-green-500" />
-        ) : (
-          <ArrowDown className="h-4 w-4 text-red-500" />
-        )}
-      </div>
-    </Card>
   )
 }
 
