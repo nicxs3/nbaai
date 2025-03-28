@@ -96,6 +96,7 @@ export default function NBAGames() {
 
   // Helper function to format minutes
   const formatMinutes = (minutes: string) => {
+    if (!minutes) return '0:00'
     const [mins, secs] = minutes.split(":")
     return `${parseInt(mins)}:${secs.slice(0, 2)}`
   }
@@ -318,21 +319,27 @@ export default function NBAGames() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {selectedGame?.awayTeam.players?.map((player, index) => (
-                        <TableRow key={index} className="hover:bg-gray-700/50">
-                          <TableCell className="font-medium whitespace-nowrap">{player.name}</TableCell>
-                          <TableCell>{player.position || '-'}</TableCell>
-                          <TableCell>{formatMinutes(player.minutes)}</TableCell>
-                          <TableCell>{player.points}</TableCell>
-                          <TableCell>{player.rebounds}</TableCell>
-                          <TableCell>{player.assists}</TableCell>
-                          <TableCell>{player.steals}</TableCell>
-                          <TableCell>{player.blocks}</TableCell>
-                          <TableCell>{player.fg}</TableCell>
-                          <TableCell>{player.threes}</TableCell>
-                          <TableCell>{player.ft}</TableCell>
+                      {selectedGame?.awayTeam.players?.length ? (
+                        selectedGame.awayTeam.players.map((player, index) => (
+                          <TableRow key={index} className="hover:bg-gray-700/50">
+                            <TableCell className="font-medium whitespace-nowrap">{player.name}</TableCell>
+                            <TableCell>{player.position}</TableCell>
+                            <TableCell>{formatMinutes(player.minutes)}</TableCell>
+                            <TableCell>{player.points}</TableCell>
+                            <TableCell>{player.rebounds}</TableCell>
+                            <TableCell>{player.assists}</TableCell>
+                            <TableCell>{player.steals}</TableCell>
+                            <TableCell>{player.blocks}</TableCell>
+                            <TableCell>{player.fg}</TableCell>
+                            <TableCell>{player.threes}</TableCell>
+                            <TableCell>{player.ft}</TableCell>
+                          </TableRow>
+                        ))
+                      ) : (
+                        <TableRow>
+                          <TableCell colSpan={11} className="text-center">No player data available</TableCell>
                         </TableRow>
-                      ))}
+                      )}
                     </TableBody>
                   </Table>
                 </div>
@@ -361,21 +368,27 @@ export default function NBAGames() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {selectedGame?.homeTeam.players?.map((player, index) => (
-                        <TableRow key={index} className="hover:bg-gray-700/50">
-                          <TableCell className="font-medium whitespace-nowrap">{player.name}</TableCell>
-                          <TableCell>{player.position || '-'}</TableCell>
-                          <TableCell>{formatMinutes(player.minutes)}</TableCell>
-                          <TableCell>{player.points}</TableCell>
-                          <TableCell>{player.rebounds}</TableCell>
-                          <TableCell>{player.assists}</TableCell>
-                          <TableCell>{player.steals}</TableCell>
-                          <TableCell>{player.blocks}</TableCell>
-                          <TableCell>{player.fg}</TableCell>
-                          <TableCell>{player.threes}</TableCell>
-                          <TableCell>{player.ft}</TableCell>
+                      {selectedGame?.homeTeam.players?.length ? (
+                        selectedGame.homeTeam.players.map((player, index) => (
+                          <TableRow key={index} className="hover:bg-gray-700/50">
+                            <TableCell className="font-medium whitespace-nowrap">{player.name}</TableCell>
+                            <TableCell>{player.position}</TableCell>
+                            <TableCell>{formatMinutes(player.minutes)}</TableCell>
+                            <TableCell>{player.points}</TableCell>
+                            <TableCell>{player.rebounds}</TableCell>
+                            <TableCell>{player.assists}</TableCell>
+                            <TableCell>{player.steals}</TableCell>
+                            <TableCell>{player.blocks}</TableCell>
+                            <TableCell>{player.fg}</TableCell>
+                            <TableCell>{player.threes}</TableCell>
+                            <TableCell>{player.ft}</TableCell>
+                          </TableRow>
+                        ))
+                      ) : (
+                        <TableRow>
+                          <TableCell colSpan={11} className="text-center">No player data available</TableCell>
                         </TableRow>
-                      ))}
+                      )}
                     </TableBody>
                   </Table>
                 </div>
