@@ -1,5 +1,41 @@
 import { NextResponse } from 'next/server'
 
+interface PlayerStatistics {
+  minutesPlayed: string
+  points: number
+  reboundsTotal: number
+  assists: number
+  steals: number
+  blocks: number
+  fieldGoalsMade: number
+  fieldGoalsAttempted: number
+  threePointersMade: number
+  threePointersAttempted: number
+  freeThrowsMade: number
+  freeThrowsAttempted: number
+}
+
+interface BoxScorePlayer {
+  name: string
+  position: string
+  statistics: PlayerStatistics
+}
+
+interface BoxScoreTeam {
+  teamName: string
+  players: BoxScorePlayer[]
+}
+
+interface BoxScoreGame {
+  gameId: string
+  homeTeam: BoxScoreTeam
+  awayTeam: BoxScoreTeam
+}
+
+interface BoxScoreResponse {
+  game: BoxScoreGame
+}
+
 async function fetchBoxScore(gameId: string) {
   try {
     const response = await fetch(`https://cdn.nba.com/static/json/liveData/boxscore/boxscore_${gameId}.json`, {
@@ -13,7 +49,7 @@ async function fetchBoxScore(gameId: string) {
       throw new Error(`Box score fetch failed: ${response.status}`)
     }
 
-    const data = await response.json()
+    const data = await response.json() as BoxScoreResponse
     console.log('Raw box score data:', data)
     return data.game
   } catch (error) {
@@ -39,7 +75,7 @@ export async function GET(request: Request) {
     // Transform the real NBA API data into our expected format
     const transformedData = {
       homeTeam: {
-        players: boxScore.homeTeam.players.map((player: any) => ({
+        players: boxScore.homeTeam.players.map((player: BoxScorePlayer) => ({
           name: player.name,
           position: player.position || '-',
           minutes: player.statistics?.minutesPlayed || '0:00',
@@ -54,7 +90,7 @@ export async function GET(request: Request) {
         }))
       },
       awayTeam: {
-        players: boxScore.awayTeam.players.map((player: any) => ({
+        players: boxScore.awayTeam.players.map((player: BoxScorePlayer) => ({
           name: player.name,
           position: player.position || '-',
           minutes: player.statistics?.minutesPlayed || '0:00',
