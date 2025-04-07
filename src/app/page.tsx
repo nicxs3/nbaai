@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { ChevronLeft, ChevronRight, Clock, Eye, EyeOff } from "lucide-react"
+import { Clock, Eye, EyeOff } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
@@ -41,8 +41,6 @@ interface Player {
 }
 
 export default function NBAGames() {
-  const [activeIndex, setActiveIndex] = useState(0)
-  const [expanded] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [games, setGames] = useState<Game[]>([])
   const [loading, setLoading] = useState(true)
@@ -75,14 +73,6 @@ export default function NBAGames() {
     const interval = setInterval(fetchGames, 60000)
     return () => clearInterval(interval)
   }, [])
-
-  const handlePrevious = () => {
-    setActiveIndex((prev) => (prev === 0 ? games.length - 1 : prev - 1))
-  }
-
-  const handleNext = () => {
-    setActiveIndex((prev) => (prev === games.length - 1 ? 0 : prev + 1))
-  }
 
   const handleGameClick = async (game: Game) => {
     console.log('Clicked game:', game)
