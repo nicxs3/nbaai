@@ -231,61 +231,64 @@ export default function NBAGames() {
 
       {/* Player Stats Modal */}
       <Dialog open={showBoxScore} onOpenChange={setShowBoxScore}>
-        <DialogContent className="bg-gray-800 border-gray-700 text-white max-w-6xl">
-          <DialogHeader>
-            <DialogTitle className="text-2xl font-bold">
+        <DialogContent className="bg-gray-900/95 text-white fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[80vw] max-w-[1400px] min-w-[1000px] h-[600px] rounded-lg border border-gray-700">
+          <DialogHeader className="flex flex-row justify-between items-center mb-4 px-8 pt-6">
+            <DialogTitle className="text-2xl font-bold text-center flex-1">
               {selectedGame?.awayTeam.name} vs {selectedGame?.homeTeam.name}
             </DialogTitle>
+            <Button
+              variant="ghost"
+              className="text-gray-400 hover:text-white absolute right-6 top-6"
+              onClick={() => setShowBoxScore(false)}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </Button>
           </DialogHeader>
           
           {boxScoreLoading ? (
-            <div className="flex items-center justify-center h-64">
+            <div className="flex items-center justify-center h-32">
               <div className="text-xl">Loading box score...</div>
             </div>
           ) : (
-            <div className="grid grid-cols-2 gap-8">
+            <div className="flex gap-8 px-8 h-[calc(100%-80px)] overflow-y-auto">
               {/* Away Team Stats */}
-              <div>
-                <h3 className="text-xl font-semibold mb-4" style={{ color: selectedGame?.awayTeam.color }}>
+              <div className="flex-1">
+                <h3 className="text-xl font-semibold mb-4 sticky top-0 bg-gray-900/95 py-2" style={{ color: selectedGame?.awayTeam.color }}>
                   {selectedGame?.awayTeam.name}
                 </h3>
                 <div className="overflow-x-auto">
                   <Table>
-                    <TableHeader>
-                      <TableRow className="hover:bg-gray-700/50">
-                        <TableHead>Player</TableHead>
-                        <TableHead>POS</TableHead>
-                        <TableHead>MIN</TableHead>
-                        <TableHead>PTS</TableHead>
-                        <TableHead>REB</TableHead>
-                        <TableHead>AST</TableHead>
-                        <TableHead>STL</TableHead>
-                        <TableHead>BLK</TableHead>
-                        <TableHead>FG</TableHead>
-                        <TableHead>3PT</TableHead>
-                        <TableHead>FT</TableHead>
+                    <TableHeader className="sticky top-12 bg-gray-900/95">
+                      <TableRow>
+                        <TableHead className="w-[250px] text-left pl-0 text-sm font-medium text-gray-300">Player</TableHead>
+                        <TableHead className="text-center w-[60px] text-sm font-medium text-gray-300">PTS</TableHead>
+                        <TableHead className="text-center w-[60px] text-sm font-medium text-gray-300">REB</TableHead>
+                        <TableHead className="text-center w-[60px] text-sm font-medium text-gray-300">AST</TableHead>
+                        <TableHead className="text-center w-[60px] text-sm font-medium text-gray-300">STL</TableHead>
+                        <TableHead className="text-center w-[60px] text-sm font-medium text-gray-300">BLK</TableHead>
+                        <TableHead className="text-center w-[60px] text-sm font-medium text-gray-300">FG</TableHead>
+                        <TableHead className="text-center w-[60px] text-sm font-medium text-gray-300">3PT</TableHead>
+                        <TableHead className="text-center w-[60px] text-sm font-medium text-gray-300">FT</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {selectedGame?.awayTeam.players && selectedGame.awayTeam.players.length > 0 ? (
                         selectedGame.awayTeam.players.map((player, index) => (
-                          <TableRow key={index} className="hover:bg-gray-700/50">
-                            <TableCell className="font-medium whitespace-nowrap">{player.name}</TableCell>
-                            <TableCell>{player.position}</TableCell>
-                            <TableCell>{formatMinutes(player.minutes)}</TableCell>
-                            <TableCell>{player.points}</TableCell>
-                            <TableCell>{player.rebounds}</TableCell>
-                            <TableCell>{player.assists}</TableCell>
-                            <TableCell>{player.steals}</TableCell>
-                            <TableCell>{player.blocks}</TableCell>
-                            <TableCell>{player.fg}</TableCell>
-                            <TableCell>{player.threes}</TableCell>
-                            <TableCell>{player.ft}</TableCell>
+                          <TableRow key={index} className="border-t border-gray-800">
+                            <TableCell className="text-sm text-left pl-0 font-medium">{player.name}</TableCell>
+                            <TableCell className="text-center text-sm font-semibold">{player.points}</TableCell>
+                            <TableCell className="text-center text-sm">{player.rebounds}</TableCell>
+                            <TableCell className="text-center text-sm">{player.assists}</TableCell>
+                            <TableCell className="text-center text-sm">{player.steals}</TableCell>
+                            <TableCell className="text-center text-sm">{player.blocks}</TableCell>
+                            <TableCell className="text-center text-sm">{player.fg}</TableCell>
+                            <TableCell className="text-center text-sm">{player.threes}</TableCell>
+                            <TableCell className="text-center text-sm">{player.ft}</TableCell>
                           </TableRow>
                         ))
                       ) : (
                         <TableRow>
-                          <TableCell colSpan={11} className="text-center">No player data available</TableCell>
+                          <TableCell colSpan={9} className="text-center">No player data available</TableCell>
                         </TableRow>
                       )}
                     </TableBody>
@@ -294,47 +297,43 @@ export default function NBAGames() {
               </div>
 
               {/* Home Team Stats */}
-              <div>
-                <h3 className="text-xl font-semibold mb-4" style={{ color: selectedGame?.homeTeam.color }}>
+              <div className="flex-1">
+                <h3 className="text-xl font-semibold mb-4 sticky top-0 bg-gray-900/95 py-2" style={{ color: selectedGame?.homeTeam.color }}>
                   {selectedGame?.homeTeam.name}
                 </h3>
                 <div className="overflow-x-auto">
                   <Table>
-                    <TableHeader>
-                      <TableRow className="hover:bg-gray-700/50">
-                        <TableHead>Player</TableHead>
-                        <TableHead>POS</TableHead>
-                        <TableHead>MIN</TableHead>
-                        <TableHead>PTS</TableHead>
-                        <TableHead>REB</TableHead>
-                        <TableHead>AST</TableHead>
-                        <TableHead>STL</TableHead>
-                        <TableHead>BLK</TableHead>
-                        <TableHead>FG</TableHead>
-                        <TableHead>3PT</TableHead>
-                        <TableHead>FT</TableHead>
+                    <TableHeader className="sticky top-12 bg-gray-900/95">
+                      <TableRow>
+                        <TableHead className="w-[250px] text-left pl-0 text-sm font-medium text-gray-300">Player</TableHead>
+                        <TableHead className="text-center w-[60px] text-sm font-medium text-gray-300">PTS</TableHead>
+                        <TableHead className="text-center w-[60px] text-sm font-medium text-gray-300">REB</TableHead>
+                        <TableHead className="text-center w-[60px] text-sm font-medium text-gray-300">AST</TableHead>
+                        <TableHead className="text-center w-[60px] text-sm font-medium text-gray-300">STL</TableHead>
+                        <TableHead className="text-center w-[60px] text-sm font-medium text-gray-300">BLK</TableHead>
+                        <TableHead className="text-center w-[60px] text-sm font-medium text-gray-300">FG</TableHead>
+                        <TableHead className="text-center w-[60px] text-sm font-medium text-gray-300">3PT</TableHead>
+                        <TableHead className="text-center w-[60px] text-sm font-medium text-gray-300">FT</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {selectedGame?.homeTeam.players && selectedGame.homeTeam.players.length > 0 ? (
                         selectedGame.homeTeam.players.map((player, index) => (
-                          <TableRow key={index} className="hover:bg-gray-700/50">
-                            <TableCell className="font-medium whitespace-nowrap">{player.name}</TableCell>
-                            <TableCell>{player.position}</TableCell>
-                            <TableCell>{formatMinutes(player.minutes)}</TableCell>
-                            <TableCell>{player.points}</TableCell>
-                            <TableCell>{player.rebounds}</TableCell>
-                            <TableCell>{player.assists}</TableCell>
-                            <TableCell>{player.steals}</TableCell>
-                            <TableCell>{player.blocks}</TableCell>
-                            <TableCell>{player.fg}</TableCell>
-                            <TableCell>{player.threes}</TableCell>
-                            <TableCell>{player.ft}</TableCell>
+                          <TableRow key={index} className="border-t border-gray-800">
+                            <TableCell className="text-sm text-left pl-0 font-medium">{player.name}</TableCell>
+                            <TableCell className="text-center text-sm font-semibold">{player.points}</TableCell>
+                            <TableCell className="text-center text-sm">{player.rebounds}</TableCell>
+                            <TableCell className="text-center text-sm">{player.assists}</TableCell>
+                            <TableCell className="text-center text-sm">{player.steals}</TableCell>
+                            <TableCell className="text-center text-sm">{player.blocks}</TableCell>
+                            <TableCell className="text-center text-sm">{player.fg}</TableCell>
+                            <TableCell className="text-center text-sm">{player.threes}</TableCell>
+                            <TableCell className="text-center text-sm">{player.ft}</TableCell>
                           </TableRow>
                         ))
                       ) : (
                         <TableRow>
-                          <TableCell colSpan={11} className="text-center">No player data available</TableCell>
+                          <TableCell colSpan={9} className="text-center">No player data available</TableCell>
                         </TableRow>
                       )}
                     </TableBody>
