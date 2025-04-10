@@ -85,19 +85,29 @@ export default function NBAGames() {
       }
       const data = await response.json()
       console.log('Box score data:', data)
+      console.log('Away team players count:', data.awayTeam.players.length)
+      console.log('Home team players count:', data.homeTeam.players.length)
 
       // Update the selected game with real player data
       setSelectedGame(prev => {
         if (!prev) return null
+        
+        // Sort players by points scored
+        const awayPlayers = [...data.awayTeam.players].sort((a, b) => b.points - a.points)
+        const homePlayers = [...data.homeTeam.players].sort((a, b) => b.points - a.points)
+        
+        console.log('Processed away players:', awayPlayers)
+        console.log('Processed home players:', homePlayers)
+        
         return {
           ...prev,
           homeTeam: {
             ...prev.homeTeam,
-            players: data.homeTeam.players
+            players: homePlayers
           },
           awayTeam: {
             ...prev.awayTeam,
-            players: data.awayTeam.players
+            players: awayPlayers
           }
         }
       })
@@ -106,6 +116,29 @@ export default function NBAGames() {
     } finally {
       setBoxScoreLoading(false)
     }
+  }
+
+  const renderPlayers = (players: Player[] | undefined) => {
+    if (!players || players.length === 0) {
+      return (
+        <TableRow>
+          <TableCell colSpan={9} className="text-center py-4">No player data available</TableCell>
+        </TableRow>
+      )
+    }
+    return players.map((player) => (
+      <TableRow key={player.name} className="border-t border-gray-800 hover:bg-gray-800/50">
+        <TableCell className="text-sm text-left pl-0 font-medium py-2 text-white">{player.name}</TableCell>
+        <TableCell className="text-center text-sm font-semibold py-2 text-white">{player.points}</TableCell>
+        <TableCell className="text-center text-sm py-2 text-white">{player.rebounds}</TableCell>
+        <TableCell className="text-center text-sm py-2 text-white">{player.assists}</TableCell>
+        <TableCell className="text-center text-sm py-2 text-white">{player.steals}</TableCell>
+        <TableCell className="text-center text-sm py-2 text-white">{player.blocks}</TableCell>
+        <TableCell className="text-center text-sm py-2 text-white">{player.fg}</TableCell>
+        <TableCell className="text-center text-sm py-2 text-white">{player.threes}</TableCell>
+        <TableCell className="text-center text-sm py-2 text-white">{player.ft}</TableCell>
+      </TableRow>
+    ))
   }
 
   if (loading) {
@@ -219,7 +252,7 @@ export default function NBAGames() {
       {/* Player Stats Modal */}
       <Dialog open={showBoxScore} onOpenChange={setShowBoxScore}>
         <DialogContent className="bg-gray-900/95 text-white fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[80vw] max-w-[1400px] min-w-[1000px] h-[600px] rounded-lg border border-gray-700">
-          <DialogHeader className="flex flex-row justify-between items-center mb-4 px-8 pt-6">
+          <DialogHeader className="flex flex-row justify-center items-center mb-4 px-8 pt-6">
             <DialogTitle className="text-2xl font-bold text-center flex-1">
               {selectedGame?.awayTeam.name} vs {selectedGame?.homeTeam.name}
             </DialogTitle>
@@ -240,13 +273,13 @@ export default function NBAGames() {
             <div className="flex gap-8 px-8 h-[calc(100%-80px)] overflow-y-auto">
               {/* Away Team Stats */}
               <div className="flex-1">
-                <h3 className="text-xl font-semibold mb-4 sticky top-0 bg-gray-900/95 py-2" style={{ color: selectedGame?.awayTeam.color }}>
+                <h3 className="text-xl font-semibold mb-4 sticky top-0 bg-gray-900 py-2 z-20" style={{ color: selectedGame?.awayTeam.color }}>
                   {selectedGame?.awayTeam.name}
                 </h3>
                 <div className="overflow-x-auto">
                   <Table>
-                    <TableHeader className="sticky top-12 bg-gray-900/95">
-                      <TableRow>
+                    <TableHeader className="sticky top-0 bg-gray-900 z-20">
+                      <TableRow className="border-b border-gray-800">
                         <TableHead className="w-[250px] text-left pl-0 text-sm font-medium text-gray-300">Player</TableHead>
                         <TableHead className="text-center w-[60px] text-sm font-medium text-gray-300">PTS</TableHead>
                         <TableHead className="text-center w-[60px] text-sm font-medium text-gray-300">REB</TableHead>
@@ -258,26 +291,8 @@ export default function NBAGames() {
                         <TableHead className="text-center w-[60px] text-sm font-medium text-gray-300">FT</TableHead>
                       </TableRow>
                     </TableHeader>
-                    <TableBody>
-                      {selectedGame?.awayTeam.players && selectedGame.awayTeam.players.length > 0 ? (
-                        selectedGame.awayTeam.players.map((player, index) => (
-                          <TableRow key={index} className="border-t border-gray-800">
-                            <TableCell className="text-sm text-left pl-0 font-medium">{player.name}</TableCell>
-                            <TableCell className="text-center text-sm font-semibold">{player.points}</TableCell>
-                            <TableCell className="text-center text-sm">{player.rebounds}</TableCell>
-                            <TableCell className="text-center text-sm">{player.assists}</TableCell>
-                            <TableCell className="text-center text-sm">{player.steals}</TableCell>
-                            <TableCell className="text-center text-sm">{player.blocks}</TableCell>
-                            <TableCell className="text-center text-sm">{player.fg}</TableCell>
-                            <TableCell className="text-center text-sm">{player.threes}</TableCell>
-                            <TableCell className="text-center text-sm">{player.ft}</TableCell>
-                          </TableRow>
-                        ))
-                      ) : (
-                        <TableRow>
-                          <TableCell colSpan={9} className="text-center">No player data available</TableCell>
-                        </TableRow>
-                      )}
+                    <TableBody className="relative mt-2">
+                      {renderPlayers(selectedGame?.awayTeam.players)}
                     </TableBody>
                   </Table>
                 </div>
@@ -285,13 +300,13 @@ export default function NBAGames() {
 
               {/* Home Team Stats */}
               <div className="flex-1">
-                <h3 className="text-xl font-semibold mb-4 sticky top-0 bg-gray-900/95 py-2" style={{ color: selectedGame?.homeTeam.color }}>
+                <h3 className="text-xl font-semibold mb-4 sticky top-0 bg-gray-900 py-2 z-20" style={{ color: selectedGame?.homeTeam.color }}>
                   {selectedGame?.homeTeam.name}
                 </h3>
                 <div className="overflow-x-auto">
                   <Table>
-                    <TableHeader className="sticky top-12 bg-gray-900/95">
-                      <TableRow>
+                    <TableHeader className="sticky top-0 bg-gray-900 z-20">
+                      <TableRow className="border-b border-gray-800">
                         <TableHead className="w-[250px] text-left pl-0 text-sm font-medium text-gray-300">Player</TableHead>
                         <TableHead className="text-center w-[60px] text-sm font-medium text-gray-300">PTS</TableHead>
                         <TableHead className="text-center w-[60px] text-sm font-medium text-gray-300">REB</TableHead>
@@ -303,26 +318,8 @@ export default function NBAGames() {
                         <TableHead className="text-center w-[60px] text-sm font-medium text-gray-300">FT</TableHead>
                       </TableRow>
                     </TableHeader>
-                    <TableBody>
-                      {selectedGame?.homeTeam.players && selectedGame.homeTeam.players.length > 0 ? (
-                        selectedGame.homeTeam.players.map((player, index) => (
-                          <TableRow key={index} className="border-t border-gray-800">
-                            <TableCell className="text-sm text-left pl-0 font-medium">{player.name}</TableCell>
-                            <TableCell className="text-center text-sm font-semibold">{player.points}</TableCell>
-                            <TableCell className="text-center text-sm">{player.rebounds}</TableCell>
-                            <TableCell className="text-center text-sm">{player.assists}</TableCell>
-                            <TableCell className="text-center text-sm">{player.steals}</TableCell>
-                            <TableCell className="text-center text-sm">{player.blocks}</TableCell>
-                            <TableCell className="text-center text-sm">{player.fg}</TableCell>
-                            <TableCell className="text-center text-sm">{player.threes}</TableCell>
-                            <TableCell className="text-center text-sm">{player.ft}</TableCell>
-                          </TableRow>
-                        ))
-                      ) : (
-                        <TableRow>
-                          <TableCell colSpan={9} className="text-center">No player data available</TableCell>
-                        </TableRow>
-                      )}
+                    <TableBody className="relative mt-2">
+                      {renderPlayers(selectedGame?.homeTeam.players)}
                     </TableBody>
                   </Table>
                 </div>
