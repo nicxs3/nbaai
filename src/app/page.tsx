@@ -28,8 +28,6 @@ interface Game {
 
 interface Player {
   name: string
-  position: string
-  minutes: string
   points: number
   rebounds: number
   assists: number
@@ -108,13 +106,6 @@ export default function NBAGames() {
     } finally {
       setBoxScoreLoading(false)
     }
-  }
-
-  // Helper function to format minutes
-  const formatMinutes = (minutes: string) => {
-    if (!minutes) return '0:00'
-    const [mins, secs] = minutes.split(":")
-    return `${parseInt(mins)}:${secs.slice(0, 2)}`
   }
 
   if (loading) {
