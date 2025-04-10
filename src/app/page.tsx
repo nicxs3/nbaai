@@ -148,14 +148,14 @@ export default function NBAGames() {
           {games.map((game) => (
             <Card 
               key={game.id}
-              className="bg-gray-800 border-gray-700 overflow-hidden cursor-pointer hover:bg-gray-700/50 transition-colors"
+              className="bg-gray-800 border-gray-700 overflow-hidden cursor-pointer hover:bg-gray-700/50 transition-colors rounded-lg shadow-lg"
               onClick={() => handleGameClick(game)}
             >
               <div className="p-6 h-full flex flex-col">
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex items-center gap-2">
-                    <Clock className="h-4 w-4" />
-                    <span>{game.time}</span>
+                    <Clock className="h-4 w-4 text-yellow-500" />
+                    <span className="text-yellow-500">{game.time}</span>
                   </div>
                 </div>
 
@@ -163,7 +163,7 @@ export default function NBAGames() {
                   <div className="grid grid-cols-2 gap-4 w-full">
                     {/* Away Team */}
                     <div
-                      className="text-center p-4 rounded-lg"
+                      className="text-center p-4 rounded-lg bg-gray-700"
                       style={{ backgroundColor: game.awayTeam.color }}
                     >
                       <div className="flex flex-col items-center gap-2">
@@ -187,7 +187,7 @@ export default function NBAGames() {
 
                     {/* Home Team */}
                     <div
-                      className="text-center p-4 rounded-lg"
+                      className="text-center p-4 rounded-lg bg-gray-700"
                       style={{ backgroundColor: game.homeTeam.color }}
                     >
                       <div className="flex flex-col items-center gap-2">
@@ -209,10 +209,6 @@ export default function NBAGames() {
                       </div>
                     </div>
                   </div>
-                </div>
-
-                <div className="mt-4 text-center text-sm text-gray-400">
-                  {game.status}
                 </div>
               </div>
             </Card>
