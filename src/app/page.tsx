@@ -169,7 +169,9 @@ export default function NBAGames() {
     <div className="min-h-screen bg-[#0B0B1E] text-white">
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-5xl font-bold mb-12 italic">NBA Games</h1>
+          <h1 className="text-5xl font-extrabold tracking-wider uppercase bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-300 drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]" style={{ fontFamily: 'Inter, system-ui, sans-serif', letterSpacing: '0.05em' }}>
+            NBA GAMES
+          </h1>
           <div className="flex items-center gap-4">
             <Button variant="outline" onClick={() => setSidebarOpen(!sidebarOpen)}>
               {sidebarOpen ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
