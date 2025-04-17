@@ -166,10 +166,10 @@ export default function NBAGames() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white">
+    <div className="min-h-screen bg-[#0B0B1E] text-white">
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">NBA Games</h1>
+          <h1 className="text-5xl font-bold mb-12 italic">NBA Games</h1>
           <div className="flex items-center gap-4">
             <Button variant="outline" onClick={() => setSidebarOpen(!sidebarOpen)}>
               {sidebarOpen ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -177,30 +177,41 @@ export default function NBAGames() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {games.map((game) => (
             <Card 
               key={game.id}
-              className="bg-gray-800 border-gray-700 overflow-hidden cursor-pointer hover:bg-gray-700/50 transition-colors rounded-lg shadow-lg"
+              className="relative overflow-hidden cursor-pointer transition-all duration-300 hover:scale-[1.02] bg-[#0B0B1E] border-0"
               onClick={() => handleGameClick(game)}
+              style={{
+                backgroundImage: 'linear-gradient(45deg, rgba(76, 29, 149, 0.1) 0%, rgba(124, 58, 237, 0.1) 100%)',
+                boxShadow: '0 0 20px rgba(124, 58, 237, 0.1)',
+              }}
             >
-              <div className="p-6 h-full flex flex-col">
-                <div className="flex justify-between items-start mb-4">
+              <div className="absolute inset-0" style={{
+                background: 'linear-gradient(to right, rgba(139, 92, 246, 0.1), rgba(76, 29, 149, 0.1))',
+                borderRadius: '1rem',
+                padding: '1px',
+              }}>
+                <div className="absolute inset-[1px] rounded-lg bg-[#0B0B1E]" />
+              </div>
+              
+              <div className="relative p-6">
+                <div className="flex justify-between items-start mb-6">
                   <div className="flex items-center gap-2">
-                    <Clock className="h-4 w-4 text-yellow-500" />
-                    <span className="text-yellow-500">{game.time}</span>
+                    <Clock className="h-4 w-4 text-purple-400" />
+                    <span className="text-purple-400 font-medium">{game.time}</span>
                   </div>
                 </div>
 
                 <div className="flex-1 flex items-center justify-center">
-                  <div className="grid grid-cols-2 gap-4 w-full">
+                  <div className="grid grid-cols-2 gap-8 w-full">
                     {/* Away Team */}
-                    <div
-                      className="text-center p-4 rounded-lg bg-gray-700"
-                      style={{ backgroundColor: game.awayTeam.color }}
-                    >
-                      <div className="flex flex-col items-center gap-2">
-                        <div className="relative w-12 h-12">
+                    <div className="text-center p-4 rounded-lg bg-opacity-10" style={{
+                      background: 'linear-gradient(45deg, rgba(76, 29, 149, 0.1) 0%, rgba(124, 58, 237, 0.1) 100%)',
+                    }}>
+                      <div className="flex flex-col items-center gap-3">
+                        <div className="relative w-16 h-16">
                           <Image
                             src={game.awayTeam.logo}
                             alt={game.awayTeam.name}
@@ -209,22 +220,18 @@ export default function NBAGames() {
                           />
                         </div>
                         <h3 className="text-sm font-semibold text-white">{game.awayTeam.name}</h3>
-                        <div
-                          className="text-2xl font-bold"
-                          style={{ color: game.awayTeam.secondaryColor }}
-                        >
+                        <div className="text-3xl font-bold text-purple-400">
                           {game.awayTeam.score}
                         </div>
                       </div>
                     </div>
 
                     {/* Home Team */}
-                    <div
-                      className="text-center p-4 rounded-lg bg-gray-700"
-                      style={{ backgroundColor: game.homeTeam.color }}
-                    >
-                      <div className="flex flex-col items-center gap-2">
-                        <div className="relative w-12 h-12">
+                    <div className="text-center p-4 rounded-lg bg-opacity-10" style={{
+                      background: 'linear-gradient(45deg, rgba(76, 29, 149, 0.1) 0%, rgba(124, 58, 237, 0.1) 100%)',
+                    }}>
+                      <div className="flex flex-col items-center gap-3">
+                        <div className="relative w-16 h-16">
                           <Image
                             src={game.homeTeam.logo}
                             alt={game.homeTeam.name}
@@ -233,10 +240,7 @@ export default function NBAGames() {
                           />
                         </div>
                         <h3 className="text-sm font-semibold text-white">{game.homeTeam.name}</h3>
-                        <div
-                          className="text-2xl font-bold"
-                          style={{ color: game.homeTeam.secondaryColor }}
-                        >
+                        <div className="text-3xl font-bold text-purple-400">
                           {game.homeTeam.score}
                         </div>
                       </div>
