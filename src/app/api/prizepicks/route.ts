@@ -4,14 +4,20 @@ import path from 'path'
 import csv from 'csv-parser'
 
 export async function GET() {
-  const results: Record<string, string>[] = []
+  const results: Record<string, any> = {}
   const csvPath = path.join(process.cwd(), 'prizepicks_propsv2.csv')
 
   // Read and parse the CSV file asynchronously
   return new Promise<Response>((resolve) => {
     fs.createReadStream(csvPath)
       .pipe(csv())
-      .on('data', (data) => results.push(data))
+      .on('data', (data) => {
+        const category = data.Category
+        if (!results[category]) {
+          results[category] = []
+        }
+        results[category].push(data)
+      })
       .on('end', () => {
         resolve(NextResponse.json(results))
       })
@@ -24,4 +30,4 @@ export async function GET() {
         )
       })
   })
-}
+} 

@@ -5,15 +5,6 @@ import json
 from datetime import datetime
 import pytz
 
-def print_jokic_stats():
-    # Nikola Jokić career stats
-    career = playercareerstats.PlayerCareerStats(player_id='203999')
-    df = career.get_data_frames()[0]
-    
-    # Select most important columns for clarity
-    important_cols = ['SEASON_ID', 'TEAM_ABBREVIATION', 'GP', 'MIN', 'PTS', 'AST', 'REB', 'FG_PCT', 'FG3_PCT', 'FT_PCT']
-    print("\n=== Nikola Jokić Career Stats ===")
-    print(df[important_cols].to_string(index=False))
 
 def get_todays_games():
     # Get today's games
