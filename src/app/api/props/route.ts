@@ -4,7 +4,7 @@ import path from 'path';
 import csv from 'csv-parser';
 
 export async function GET() {
-  const results: any[] = [];
+  const results: Record<string, string>[] = [];
   const csvPath = path.join(process.cwd(), 'prizepicks_propsv2.csv');
 
   return new Promise((resolve) => {

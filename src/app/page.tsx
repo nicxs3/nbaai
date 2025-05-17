@@ -137,7 +137,7 @@ export default function NBAGames() {
       const res = await fetch('/api/props')
       const data = await res.json()
       setPropsData(data)
-    } catch (e) {
+    } catch  {
       setPropsData([])
     }
     setPropsLoading(false)
