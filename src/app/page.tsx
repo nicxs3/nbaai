@@ -47,10 +47,6 @@ type PrizePickProp = {
   Timestamp: string
 }
 
-type PropsData = {
-  [category: string]: PrizePickProp[]
-}
-
 export default function NBAGames() {
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [games, setGames] = useState<Game[]>([])
