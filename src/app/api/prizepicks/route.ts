@@ -3,15 +3,28 @@ import fs from 'fs'
 import path from 'path'
 import csv from 'csv-parser'
 
+type PrizePickProp = {
+  Category: string
+  Name: string
+  Value: string
+  Matchup: string
+  Payout: string
+  Timestamp: string
+}
+
+type PropsData = {
+  [category: string]: PrizePickProp[]
+}
+
 export async function GET() {
-  const results: Record<string, any> = {}
+  const results: PropsData = {}
   const csvPath = path.join(process.cwd(), 'prizepicks_propsv2.csv')
 
   // Read and parse the CSV file asynchronously
   return new Promise<Response>((resolve) => {
     fs.createReadStream(csvPath)
       .pipe(csv())
-      .on('data', (data) => {
+      .on('data', (data: PrizePickProp) => {
         const category = data.Category
         if (!results[category]) {
           results[category] = []

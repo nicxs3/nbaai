@@ -59,10 +59,6 @@ export default function NBAGames() {
   const [showBoxScore, setShowBoxScore] = useState(false)
   const [selectedGame, setSelectedGame] = useState<Game | null>(null)
   const [boxScoreLoading, setBoxScoreLoading] = useState(false)
-  const [showPropsModal, setShowPropsModal] = useState(false)
-  const [propsData, setPropsData] = useState<PropsData>({})
-  const [propsLoading, setPropsLoading] = useState(false)
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
 
   useEffect(() => {
     const fetchGames = async () => {
@@ -132,23 +128,6 @@ export default function NBAGames() {
       console.error('Error fetching box score:', error)
     } finally {
       setBoxScoreLoading(false)
-    }
-  }
-
-  const handleShowProps = async () => {
-    setShowPropsModal(true)
-    setPropsLoading(true)
-    try {
-      const response = await fetch('/api/prizepicks')
-      const data = await response.json()
-      setPropsData(data)
-      // Set the first category as selected by default
-      const firstCategory = Object.keys(data)[0]
-      setSelectedCategory(firstCategory)
-    } catch (error) {
-      console.error('Error fetching props:', error)
-    } finally {
-      setPropsLoading(false)
     }
   }
 
