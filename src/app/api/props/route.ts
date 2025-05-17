@@ -8,7 +8,7 @@ export async function GET() {
   const csvPath = path.join(process.cwd(), 'prizepicks_propsv2.csv')
 
   // Read and parse the CSV file asynchronously
-  return new Promise<Response>((resolve, reject) => {
+  return new Promise<Response>((resolve) => {
     fs.createReadStream(csvPath)
       .pipe(csv())
       .on('data', (data) => results.push(data))
