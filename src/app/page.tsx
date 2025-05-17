@@ -38,15 +38,6 @@ interface Player {
   ft: string
 }
 
-type PrizePickProp = {
-  Category: string
-  Name: string
-  Value: string
-  Matchup: string
-  Payout: string
-  Timestamp: string
-}
-
 export default function NBAGames() {
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [games, setGames] = useState<Game[]>([])
