@@ -38,6 +38,15 @@ interface Player {
   ft: string
 }
 
+type PrizePickProp = {
+  Category: string
+  Name: string
+  Value: string
+  Matchup: string
+  Payout: string
+  Timestamp: string
+}
+
 export default function NBAGames() {
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [games, setGames] = useState<Game[]>([])
@@ -46,6 +55,9 @@ export default function NBAGames() {
   const [showBoxScore, setShowBoxScore] = useState(false)
   const [selectedGame, setSelectedGame] = useState<Game | null>(null)
   const [boxScoreLoading, setBoxScoreLoading] = useState(false)
+  const [showPropsModal, setShowPropsModal] = useState(false)
+  const [propsData, setPropsData] = useState<PrizePickProp[]>([])
+  const [propsLoading, setPropsLoading] = useState(false)
 
   useEffect(() => {
     const fetchGames = async () => {
@@ -118,6 +130,19 @@ export default function NBAGames() {
     }
   }
 
+  const handleShowProps = async () => {
+    setShowPropsModal(true)
+    setPropsLoading(true)
+    try {
+      const res = await fetch('/api/props')
+      const data = await res.json()
+      setPropsData(data)
+    } catch (e) {
+      setPropsData([])
+    }
+    setPropsLoading(false)
+  }
+
   const renderPlayers = (players: Player[] | undefined) => {
     if (!players || players.length === 0) {
       return (
@@ -173,11 +198,53 @@ export default function NBAGames() {
             NBA GAMES
           </h1>
           <div className="flex items-center gap-4">
+            <Button variant="default" onClick={handleShowProps}>
+              Show PrizePicks Props
+            </Button>
             <Button variant="outline" onClick={() => setSidebarOpen(!sidebarOpen)}>
               {sidebarOpen ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </Button>
           </div>
         </div>
+
+        {/* PrizePicks Props Modal */}
+        <Dialog open={showPropsModal} onOpenChange={setShowPropsModal}>
+          <DialogContent className="bg-gray-900/95 text-white w-[90vw] max-w-[1200px] h-[80vh] overflow-auto">
+            <DialogHeader>
+              <DialogTitle>PrizePicks Props</DialogTitle>
+            </DialogHeader>
+            {propsLoading ? (
+              <div>Loading...</div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="min-w-full text-xs">
+                  <thead>
+                    <tr>
+                      <th>Category</th>
+                      <th>Name</th>
+                      <th>Value</th>
+                      <th>Matchup</th>
+                      <th>Payout</th>
+                      <th>Timestamp</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {propsData.map((row, idx) => (
+                      <tr key={idx}>
+                        <td>{row.Category}</td>
+                        <td>{row.Name}</td>
+                        <td>{row.Value}</td>
+                        <td>{row.Matchup}</td>
+                        <td>{row.Payout}</td>
+                        <td>{row.Timestamp}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {games.map((game) => (
