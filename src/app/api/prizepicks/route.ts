@@ -25,17 +25,15 @@ async function runScrapingScript() {
   try {
     const scriptPath = path.join(process.cwd(), 'src/propdata/webscrape.py')
     await execAsync(`python ${scriptPath}`)
-    console.log('PrizePicks data updated successfully')
+    console.log('PrizePicks data updated successfully at:', new Date().toISOString())
   } catch (error) {
     console.error('Error updating PrizePicks data:', error)
   }
 }
 
-// Run the scraping script every 15 minutes
-setInterval(runScrapingScript, 15 * 60 * 1000)
-
-// Run it once when the server starts
-runScrapingScript()
+// Run the scraping script every hour
+setInterval(runScrapingScript, 60 * 60 * 1000)
+//runScrapingScript()
 
 export async function GET() {
   const results: PropsData = {}

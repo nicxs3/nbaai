@@ -9,6 +9,7 @@ import time
 import pandas as pd
 import bs4
 from datetime import datetime
+import os
 
 # Set up Chrome options
 chrome_options = uc.ChromeOptions()
@@ -124,7 +125,6 @@ for category in stat_categories:
             players = {
                 'Category': category,
                 'Name': names,
-                #'Type': proj_type,
                 'Value': value,
                 'Matchup': matchup,
                 'Payout': payout
@@ -139,8 +139,15 @@ dfProps = pd.DataFrame(ppPlayers)
 # Add a timestamp column
 dfProps['Timestamp'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-# Save DataFrame to a CSV file
-csv_file_path = r"C:\Users\11487\OneDrive\Documents\Python\Prize Picks Project\prizepicks_propsv2.csv"
+# Get the current working directory and create the CSV file path
+current_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.dirname(os.path.dirname(current_dir))
+csv_file_path = os.path.join(project_root, 'prizepicks_propsv2.csv')
+
+# Save DataFrame to CSV file, overwriting the existing file
 dfProps.to_csv(csv_file_path, index=False)
 
-print("All categories have been scraped and saved to 'prizepicks_propsv2.csv'.")
+print(f"All categories have been scraped and saved to '{csv_file_path}'.")
+
+# Close the browser
+driver.quit()
