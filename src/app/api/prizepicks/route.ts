@@ -2,6 +2,10 @@ import { NextResponse } from 'next/server'
 import fs from 'fs'
 import path from 'path'
 import csv from 'csv-parser'
+import { exec } from 'child_process'
+import { promisify } from 'util'
+
+const execAsync = promisify(exec)
 
 type PrizePickProp = {
   Category: string
@@ -15,6 +19,23 @@ type PrizePickProp = {
 type PropsData = {
   [category: string]: PrizePickProp[]
 }
+
+// Function to run the scraping script
+async function runScrapingScript() {
+  try {
+    const scriptPath = path.join(process.cwd(), 'src/propdata/webscrape.py')
+    await execAsync(`python ${scriptPath}`)
+    console.log('PrizePicks data updated successfully')
+  } catch (error) {
+    console.error('Error updating PrizePicks data:', error)
+  }
+}
+
+// Run the scraping script every 15 minutes
+setInterval(runScrapingScript, 15 * 60 * 1000)
+
+// Run it once when the server starts
+runScrapingScript()
 
 export async function GET() {
   const results: PropsData = {}

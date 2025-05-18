@@ -159,8 +159,25 @@ export default function NBAGames() {
 
   if (games.length === 0) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white flex items-center justify-center">
-        <div className="text-xl">No games scheduled for today</div>
+      <div className="min-h-screen bg-[#0B0B1E] text-white">
+        <div className="container mx-auto px-4 py-8">
+          <div className="flex justify-between items-center mb-8">
+            <h1 className="text-5xl font-extrabold tracking-wider uppercase bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-300 drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]" style={{ fontFamily: 'Inter, system-ui, sans-serif', letterSpacing: '0.05em' }}>
+              NBA GAMES
+            </h1>
+            <div className="flex items-center gap-4">
+              <Button 
+                variant="default" 
+                onClick={() => window.open('/prizepicks', '_blank')}
+              >
+                Show PrizePicks Props
+              </Button>
+            </div>
+          </div>
+          <div className="flex items-center justify-center h-32">
+            <div className="text-xl">No games scheduled for today</div>
+          </div>
+        </div>
       </div>
     )
   }
@@ -178,9 +195,6 @@ export default function NBAGames() {
               onClick={() => window.open('/prizepicks', '_blank')}
             >
               Show PrizePicks Props
-            </Button>
-            <Button variant="outline" onClick={() => setSidebarOpen(!sidebarOpen)}>
-              {sidebarOpen ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </Button>
           </div>
         </div>

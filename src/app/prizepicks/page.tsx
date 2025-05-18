@@ -21,24 +21,29 @@ export default function PrizePicksPage() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    const fetchProps = async () => {
-      try {
-        const response = await fetch('/api/prizepicks')
-        const data = await response.json()
-        setPropsData(data)
-        // Set the first category as selected by default
-        const firstCategory = Object.keys(data)[0]
-        setSelectedCategory(firstCategory)
-      } catch (error) {
-        console.error('Error fetching props:', error)
-      } finally {
-        setLoading(false)
+  const fetchProps = async () => {
+    try {
+      const response = await fetch('/api/prizepicks')
+      const data = await response.json()
+      setPropsData(data)
+      // Set the first category as selected by default if none is selected
+      if (!selectedCategory && Object.keys(data).length > 0) {
+        setSelectedCategory(Object.keys(data)[0])
       }
+    } catch (error) {
+      console.error('Error fetching props:', error)
+    } finally {
+      setLoading(false)
     }
+  }
 
+  useEffect(() => {
     fetchProps()
-  }, [])
+
+    // Refresh data every minute
+    const interval = setInterval(fetchProps, 60000)
+    return () => clearInterval(interval)
+  }, [selectedCategory])
 
   return (
     <div className="min-h-screen bg-[#0B0B1E] text-white p-8">
