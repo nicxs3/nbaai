@@ -32,8 +32,8 @@ async function runScrapingScript() {
 }
 
 // Run the scraping script every hour
-setInterval(runScrapingScript, 60 * 60 * 1000)
-//runScrapingScript()
+//setInterval(runScrapingScript, 60 * 60 * 1000)
+runScrapingScript()
 
 export async function GET() {
   const results: PropsData = {}
